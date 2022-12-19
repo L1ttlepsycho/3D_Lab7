@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.XR;
 using UnityStandardAssets.Characters.ThirdPerson;
 
 [RequireComponent(typeof(UnityEngine.AI.NavMeshAgent))]
@@ -20,7 +21,7 @@ public class GuardBehaviour : MonoBehaviour
         // get the components on the object we need ( should not be null due to require component so no need to check )
         agent = GetComponentInChildren<UnityEngine.AI.NavMeshAgent>();
         character = GetComponent<ThirdPersonCharacter>();
-
+        
         agent.updateRotation = false;
         agent.updatePosition = true;
         on_chase = false;
@@ -31,6 +32,7 @@ public class GuardBehaviour : MonoBehaviour
         if (collision.transform.name == "Player")
         {
             Debug.Log("cached! ");
+            EventManager.GetInstance().PlayerGameover();
         }
         
     }
@@ -40,6 +42,7 @@ public class GuardBehaviour : MonoBehaviour
         if (other.transform.name == "Player")
         {
             Debug.Log("chasing... ");
+            target= other.transform;
             on_chase = true;
         }
     }
@@ -49,7 +52,9 @@ public class GuardBehaviour : MonoBehaviour
         if (other.transform.name == "Player")
         {
             Debug.Log("losing target...");
+            target = null;
             on_chase = false;
+            EventManager.GetInstance().PlayerEscape();
         }
     }
 
@@ -69,13 +74,19 @@ public class GuardBehaviour : MonoBehaviour
             }
 
         }
-
         if (agent.remainingDistance > agent.stoppingDistance)
             character.Move(agent.desiredVelocity, false, false);
         else
             character.Move(Vector3.zero, false, false);
     }
 
+    public void SetRoute(List<Vector3> route)
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            patrol_route[i] = route[i];
+        }
+    }
 
     public void SetTarget(Transform target)
     {
