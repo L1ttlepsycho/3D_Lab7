@@ -1,7 +1,7 @@
 # 3D_Lab7
 # Patrolman 戏耍巡逻小游戏
 
-*演示视屏链接：*
+*演示视频链接：https://www.bilibili.com/video/BV1we411c7Ng/*
 
 ## 要求
 **游戏设计要求：**
